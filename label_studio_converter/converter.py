@@ -401,22 +401,31 @@ class Converter(object):
             if len(labels) == 0:
                 logger.error('Empty bboxes.')
                 continue
-            width, height = labels[0]['original_width'], labels[0]['original_height']
+            
             image_id = len(images)
-            images.append({
-                'width': width,
-                'height': height,
-                'id': image_id,
-                'file_name': image_path
-            })
-
+            
             for label in labels:
                 if 'rectanglelabels' in label:
                     category_name = label['rectanglelabels'][0]
+                    width, height = labels[0]['original_width'], labels[0]['original_height']
+                    images.append({
+                        'width': width,
+                        'height': height,
+                        'id': image_id,
+                        'file_name': image_path
+                        })
                 elif 'polygonlabels' in label:
                     category_name = label['polygonlabels'][0]
+                    width, height = labels[0]['original_width'], labels[0]['original_height']
+                    images.append({
+                        'width': width,
+                        'height': height,
+                        'id': image_id,
+                        'file_name': image_path
+                        })
                 else:
-                    raise ValueError("Unknown label type")
+                    # raise ValueError("Unknown label type")
+                    pass
 
                 if category_name not in category_name_to_id:
                     category_id = len(categories)
@@ -460,7 +469,8 @@ class Converter(object):
                         'area': get_polygon_area(x, y)
                     })
                 else:
-                    raise ValueError("Unknown label type")
+                    # raise ValueError("Unknown label type")
+                    pass
 
                 if os.getenv('LABEL_STUDIO_FORCE_ANNOTATOR_EXPORT'):
                     annotations[-1].update({'annotator': item['completed_by'].get('email')})
